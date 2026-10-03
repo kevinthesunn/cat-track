@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Field issues · CAT Engineering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    .case-list { max-height: calc(100vh - 300px); min-height: 320px; }
+    .case-item { display: block; width: 100%; text-align: left; background: transparent; border: 0; border-top: 1px solid var(--line); padding: 12px 10px 12px 12px; cursor: pointer; color: var(--ink); }
+    .case-item:first-child { border-top: 0; }
+    .case-item:hover { background: var(--s2); }
+    .case-item.sel { background: var(--s2); box-shadow: inset 4px 0 0 var(--cat); }
+    .case-item .tt { font-weight: 600; margin-top: 6px; line-height: 1.3; }
+    .case-item .mm { font-family: var(--f-mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .detail-head h2 { font-family: var(--f-display); font-weight: 700; font-size: 38px; line-height: 1; margin-top: 10px; }
+    .status-track { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 16px; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+    .status-track span { font-family: var(--f-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 7px 8px; color: var(--faint); border-right: 1px solid var(--line); }
+    .status-track span:last-child { border-right: 0; }
+    .status-track span.past { color: var(--ink-2); }
+    .status-track span.on { background: var(--cat); color: var(--cat-ink); font-weight: 500; }
+    .evidence { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 0; margin-top: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .evidence > div { padding: 14px 16px 14px 0; }
+    .evidence > div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+    @media (max-width: 1200px) { .evidence { grid-template-columns: 1fr; } .evidence > div + div { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; } }
+    .bar-row { display: grid; grid-template-columns: minmax(0, 1fr) 90px 44px; align-items: center; gap: 10px; font-size: 13px; margin-top: 8px; }
+    .bar-row .lab { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-row .bar { height: 8px; }
+    .bar-row .bar i { display: block; height: 100%; background: var(--cat); border-radius: 0 4px 4px 0; min-width: 3px; }
+    .bar-row .val { font-family: var(--f-mono); font-size: 12px; color: var(--ink-2); text-align: right; }
+    .mrow { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; font-size: 14px; padding: 5px 0; }
+    .analysis { margin-top: 20px; padding: 16px 18px; background: var(--s2); border: 1px solid var(--line); border-left: 4px solid var(--cat); border-radius: 4px; }
+    .two { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; margin-top: 22px; }
+    @media (max-width: 1200px) { .two { grid-template-columns: 1fr; } }
+    .sec-title { font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+    .ev { padding: 12px 0; border-top: 1px solid var(--line); }
+    .ev q { display: block; font-size: 16px; line-height: 1.4; margin-top: 6px; quotes: '“' '”'; }
+    .ev .by { font-size: 12px; color: var(--muted); margin-top: 5px; }
+    .ev img { max-width: 160px; border-radius: 3px; margin-top: 8px; border: 1px solid var(--line); }
+    .fix-row { padding: 12px 0; border-top: 1px solid var(--line); }
+    .conf { height: 6px; background: var(--s3); border-radius: 1px; overflow: hidden; margin-top: 8px; }
+    .conf i { display: block; height: 100%; background: var(--good); }
+    .actions-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div class="page">
+    <div class="page-head">
+      <div><div class="label" data-i18n>CAT Engineering</div><h1 style="margin-top:6px" data-i18n>Field issues across the fleet</h1><div class="sub" data-i18n>Mechanical failures from every job site, grouped by model and part. Each case keeps the operators’ own words.</div></div>
+      <div class="row wrap">
+        <select class="select" id="statusFilter" style="width:auto" aria-label="Filter cases" data-i18n-attr="aria-label">
+          <option value="open" data-i18n>Open cases</option><option value="all" data-i18n>All cases</option><option value="new" data-i18n>New</option><option value="investigating" data-i18n>Investigating</option><option value="quick_fix_issued" data-i18n>Quick fix sent</option><option value="product_update" data-i18n>Design change planned</option><option value="closed" data-i18n>Closed</option>
+        </select>
+        <select class="select" id="engineerSel" style="width:auto" aria-label="Signed in as" data-i18n-attr="aria-label"></select>
+        <a class="btn" href="/library" data-i18n>Product library</a>
+      </div>
+    </div>
+    <div class="statline" id="stats"><span class="sk" style="width:160px;height:56px"></span><span class="sk line" style="width:420px"></span></div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><h3 data-i18n>Cases</h3><span class="count" id="caseCount"></span></div>
+        <div class="scroll case-list" id="cases"></div>
+      </div>
+      <div class="panel panel-pad" id="detail"></div>
+    </div>
+  </div>
+  <script src="/i18n/es.js"></script>
+  <script src="/i18n/hi.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/engineering.js"></script>
+</body>
+</html>

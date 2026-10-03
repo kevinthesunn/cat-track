@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asset QR Tags</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    .qtags { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+    .qtag { background: #fff; color: #111; border-radius: 4px; overflow: hidden; border: 3px solid var(--yellow); display: flex; flex-direction: column; }
+    .qtag .hd { background: var(--yellow); color: var(--yellow-ink); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-family: var(--f-display); font-weight: 800; letter-spacing: .08em; }
+    .qtag .bd { padding: 12px; text-align: center; }
+    .qtag img { width: 100%; max-width: 200px; aspect-ratio: 1; display: block; margin: 0 auto; }
+    .qtag .uid { font-family: var(--f-display); font-size: 32px; font-weight: 800; letter-spacing: .06em; line-height: 1; margin-top: 6px; }
+    .qtag .md { font-size: 14px; color: #444; margin-top: 3px; }
+    .qtag .ft { font-size: 11px; color: #777; padding: 0 12px 10px; text-align: center; }
+    @media print {
+      .topbar, .noprint { display: none !important; }
+      body { background: #fff; }
+      .page { padding: 0; }
+      .qtags { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .qtag { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div class="page">
+    <div class="row spread wrap noprint" style="margin-bottom:14px">
+      <div><div class="label" data-i18n>Setup</div><h1 style="margin-top:6px" data-i18n>Machine tags</h1><p class="muted" style="margin-top:8px;max-width:60ch" data-i18n>Print these and tape one inside each cab door. Scanning a tag, with the operator screen or a normal phone camera, opens the report screen for that machine.</p></div>
+      <div class="row"><span class="muted" style="font-size:13px" id="base"></span><button class="btn primary" onclick="window.print()" data-i18n>Print tags</button></div>
+    </div>
+    <div class="qtags" id="tags"></div>
+  </div>
+  <script src="/i18n/es.js"></script>
+  <script src="/i18n/hi.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script>
+    (async function () {
+      const { api, esc, topbar, connectStream, t } = CT;
+      document.getElementById('top').innerHTML = topbar('/tags');
+      connectStream({}, document.getElementById('live'));
+      const [assets, pub] = await Promise.all([api('/api/assets'), api('/api/public-url')]);
+      document.getElementById('base').textContent = t('Links to {url}', { url: pub.url });
+      document.getElementById('tags').innerHTML = assets.map((a) => {
+        const url = `${pub.url}/operator?unit=${encodeURIComponent(a.id)}`;
+        return `<div class="qtag"><div class="hd"><span>CAT TRACK</span><span>${esc(a.site_id)}</span></div>
+          <div class="bd"><img src="/api/qr.svg?data=${encodeURIComponent(url)}" alt="${t('QR for {id}', { id: esc(a.id) })}"><div class="uid">${esc(a.id)}</div><div class="md">${esc(a.model)} ${esc(t(a.family))}</div></div>
+          <div class="ft">${t('S/N')} ${esc(a.serial)} · ${t('scan to report a problem')}</div></div>`;
+      }).join('');
+    })();
+  </script>
+</body>
+</html>

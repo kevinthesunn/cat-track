@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reports · Cat Track</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    .filters { display: grid; grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(150px, 1fr)); gap: 10px; align-items: end; }
+    @media (max-width: 960px) { .filters { grid-template-columns: 1fr 1fr; } .filters .search { grid-column: 1 / -1; } }
+    .search { position: relative; }
+    .search .icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); width: 16px; height: 16px; }
+    .search .input { padding-left: 34px; }
+    .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 16px 0 0; border-bottom: 1px solid var(--line); }
+    .tabs { display: flex; }
+    .tabs button { border: 0; background: transparent; padding: 10px 0; margin-right: 22px; font-weight: 600; font-size: 15px; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+    .tabs button.on { color: var(--ink); border-bottom-color: var(--cat); }
+    .tabs .n { font-family: var(--f-mono); font-size: 12px; color: var(--faint); margin-left: 6px; font-weight: 400; }
+    .kinds { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 0 4px; }
+    .kinds button { display: inline-flex; align-items: center; gap: 7px; }
+    .kinds button .ic { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--s3); color: var(--ink-2); }
+    .kinds button .ic svg { width: 12px; height: 12px; }
+    .kinds button .n { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+    .kinds button.on { border-color: var(--cat); color: var(--ink); box-shadow: inset 0 -2px 0 var(--cat); }
+    .pending-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 10px 0 0; padding: 8px 12px; border: 1px solid var(--line-strong); border-left: 4px solid var(--cat); border-radius: 4px; background: var(--s2); font-size: 14px; }
+    .what .iss { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--s3); color: var(--ink-2); margin-right: 8px; vertical-align: -5px; }
+    .what .iss svg { width: 13px; height: 13px; }
+    .what .nb { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; font-family: var(--f-mono); font-size: 11px; font-weight: 400; color: var(--muted); }
+    .what .nb svg { width: 12px; height: 12px; }
+    tbody.rec.fresh tr.main td { animation: rowflash 2.6s ease; }
+    @keyframes rowflash { 0%, 40% { background: rgba(255, 205, 17, .16); } 100% { background: transparent; } }
+    .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .edited { font-size: 12px; color: var(--faint); margin-top: 8px; }
+    .notes { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .notes h4 { font-family: var(--f-mono); font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+    .note { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; padding: 7px 0; border-top: 1px solid var(--line); font-size: 14px; }
+    .note:first-of-type { border-top: 0; }
+    .note .by { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+    .note .txt { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .note-form { display: flex; gap: 8px; margin-top: 8px; align-items: flex-end; }
+    .note-form .textarea { min-height: 42px; height: 42px; font-size: 14px; padding: 9px 11px; }
+    .edit-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 12px; }
+    .edit-grid .full { grid-column: 1 / -1; }
+    .edit-grid .two { grid-column: span 2; }
+    @media (max-width: 760px) { .edit-grid { grid-template-columns: 1fr; } .edit-grid .two { grid-column: auto; } }
+    table.log { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table.log th { text-align: left; font-family: var(--f-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 12px 12px 8px 0; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+    table.log td { padding: 11px 12px 11px 0; vertical-align: middle; }
+    tbody.rec { border-bottom: 1px solid var(--line); }
+    tbody.rec tr.main { cursor: pointer; }
+    tbody.rec tr.main:hover td { background: var(--s2); }
+    tbody.rec tr.main:focus-visible { outline: 2px solid var(--cat); outline-offset: -2px; }
+    tbody.rec tr.more { display: none; }
+    tbody.rec.open tr.more { display: table-row; }
+    tbody.rec.open tr.main td { background: var(--s2); }
+    tbody.rec tr.more td { padding: 4px 12px 16px 14px; background: var(--s2); border-left: 3px solid var(--cat); }
+    tbody.rec.open .chev { transform: rotate(180deg); }
+    tbody.rec.withdrawn tr.main td:not(.tog) { opacity: .6; }
+    tbody.rec.gone { opacity: .35; pointer-events: none; }
+    table.log td.when { font-family: var(--f-mono); font-size: 12px; color: var(--ink-2); white-space: nowrap; width: 1%; padding-left: 8px; }
+    table.log td.when .ago { color: var(--faint); display: block; margin-top: 2px; }
+    table.log td .m { color: var(--muted); font-size: 12px; display: block; margin-top: 2px; }
+    table.log td.unit, table.log td.loc, table.log td.pri, table.log td.st { white-space: nowrap; width: 1%; }
+    table.log td.loc { color: var(--ink-2); }
+    table.log td.what b { font-weight: 600; }
+    table.log td.tog { width: 24px; padding-right: 8px; text-align: right; }
+    .reason { display: block; color: var(--ink-2); font-size: 13px; margin-top: 3px; quotes: '“' '”'; }
+    @media (max-width: 760px) {
+      table.log thead { display: none; }
+      table.log, tbody.rec, tbody.rec tr.more td { display: block; width: auto; }
+      tbody.rec.open tr.more { display: block; }
+      tbody.rec tr.main { display: grid; grid-template-columns: minmax(0, 1fr) auto 18px; grid-template-areas: 'what pri tog' 'unit st tog' 'loc when tog'; gap: 3px 10px; align-items: center; padding: 11px 0 11px 6px; }
+      table.log tbody.rec tr.main td { display: block; padding: 0; width: auto; min-width: 0; background: none; white-space: normal; }
+      tbody.rec.open tr.main { background: var(--s2); }
+      table.log td.what { grid-area: what; } table.log td.what b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      table.log td.pri { grid-area: pri; text-align: right; }
+      table.log td.unit { grid-area: unit; } table.log td.unit .m { display: inline; margin-left: 6px; }
+      table.log td.st { grid-area: st; text-align: right; } table.log td.st .m { display: inline; margin-left: 6px; }
+      table.log td.loc { grid-area: loc; font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      table.log td.when { grid-area: when; text-align: right; } table.log td.when .ago { display: none; }
+      table.log td.tog { grid-area: tog; }
+      tbody.rec tr.more td { padding: 4px 10px 14px 12px; }
+    }
+    .foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 14px; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div class="page">
+    <div class="page-head">
+      <div><div class="label" data-i18n>Field record</div><h1 style="margin-top:6px" data-i18n>Reports</h1><div class="sub" data-i18n>Every report, newest first. New ones appear here as they come in.</div></div>
+      <div style="min-width:200px"><label class="lbl" for="me" data-i18n>Acting as</label><select class="select" id="me"></select></div>
+    </div>
+    <div class="panel panel-pad">
+      <div class="filters">
+        <div class="search"><label class="lbl" for="q" data-i18n>Search</label><div style="position:relative"><span id="qIcon"></span><input class="input" id="q" placeholder="Words, part, unit or person" data-i18n-attr="placeholder" autocomplete="off"></div></div>
+        <div><label class="lbl" for="site" data-i18n>Job site</label><select class="select" id="site"><option value="" data-i18n>All sites</option></select></div>
+        <div><label class="lbl" for="asset" data-i18n>Machine</label><select class="select" id="asset"><option value="" data-i18n>All machines</option></select></div>
+        <div><label class="lbl" for="person" data-i18n>Reported by</label><select class="select" id="person"><option value="" data-i18n>Anyone</option></select></div>
+      </div>
+      <div class="bar">
+        <div class="tabs" role="tablist"><button type="button" data-tab="record" class="on" role="tab"><span data-i18n>On record</span><span class="n" id="nRecord"></span></button><button type="button" data-tab="deleted" role="tab"><span data-i18n>Deleted</span><span class="n" id="nDeleted"></span></button></div>
+        <label class="switch" id="openWrap" style="padding-bottom:8px"><input type="checkbox" id="openOnly"><span class="track"></span><span data-i18n>Open issues only</span></label>
+      </div>
+      <div class="kinds" id="kinds" role="group" aria-label="Type of issue" data-i18n-attr="aria-label"></div>
+      <div class="pending-bar hidden" id="pendingBar"></div>
+      <div id="list"></div>
+      <div class="foot" id="foot"></div>
+    </div>
+  </div>
+  <script src="/i18n/es.js"></script>
+  <script src="/i18n/hi.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Site map · Cat Track</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    body { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+    .wrap { flex: 1; display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 0; }
+    /* filters + live feed */
+    .side { border-right: 1px solid var(--line); padding: 14px 16px 24px; overflow-y: auto; background: var(--s1); }
+    .sumline { display: flex; gap: 18px; padding: 2px 0 12px; }
+    .side-tabs { display: flex; border-bottom: 1px solid var(--line); margin: 0 -16px; padding: 0 16px; }
+    .side-tabs button { position: relative; border: 0; background: transparent; padding: 9px 0; margin-right: 20px; font-weight: 600; font-size: 14px; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+    .side-tabs button.on { color: var(--ink); border-bottom-color: var(--cat); }
+    .newdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cat); margin-left: 6px; vertical-align: 2px; }
+    .pane { padding-top: 2px; }
+    .more { border-top: 1px solid var(--line); padding-top: 10px; }
+    .more > summary { list-style: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .more > summary::-webkit-details-marker { display: none; }
+    .more > summary .icon { transition: transform .15s; }
+    .more[open] > summary .icon { transform: rotate(180deg); }
+    .linkbtn { margin-top: 14px; border: 0; background: none; padding: 0; color: var(--muted); font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+    .linkbtn:hover { color: var(--ink); }
+    .sumline .v { font-weight: 600; font-size: 22px; line-height: 1; }
+    .sumline .k { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .fsec { margin-top: 14px; }
+    .fsec .lbl { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+    .fsec .lbl small { font-family: var(--f-ui); text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--faint); }
+    .seg { display: flex; border: 1px solid var(--line-strong); border-radius: 4px; overflow: hidden; }
+    .seg button { flex: 1; border: 0; background: transparent; color: var(--muted); font-weight: 600; font-size: 13px; padding: 7px 4px; cursor: pointer; }
+    .seg button + button { border-left: 1px solid var(--line-strong); }
+    .seg button.on { background: var(--s3); color: var(--ink); box-shadow: inset 0 -2px 0 var(--cat); }
+    .urg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .urg button { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--s2); color: var(--ink); font-weight: 600; font-size: 13px; cursor: pointer; text-align: left; }
+    .urg button .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+    .urg button .n { margin-left: auto; font-family: var(--f-mono); font-size: 11px; color: var(--muted); font-weight: 400; }
+    .urg button.off { opacity: .4; background: transparent; }
+    .urg button.off .dot { background: transparent !important; border: 2px solid var(--faint); }
+    .facet button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 4px 6px; border: 0; border-radius: 4px; background: transparent; color: var(--ink); font-size: 14px; cursor: pointer; text-align: left; }
+    .facet button:hover { background: var(--s2); }
+    .facet button .ic { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--s3); color: var(--ink); flex: none; }
+    .facet button .ic svg { width: 15px; height: 15px; }
+    .facet button .n { margin-left: auto; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+    .facet button .box { width: 16px; height: 16px; border: 1.5px solid var(--line-strong); border-radius: 3px; display: grid; place-items: center; flex: none; }
+    .facet button .box svg { width: 11px; height: 11px; stroke-width: 3; }
+    .facet button.on .box { background: var(--cat); border-color: var(--cat); color: var(--cat-ink); }
+    .facet button:not(.on) .ic, .facet button:not(.on) .lab { opacity: .45; }
+    .facet .lshape { width: 26px; display: grid; place-items: center; flex: none; }
+    .fe { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; width: 100%; padding: 9px 6px; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; cursor: pointer; border-radius: 0; }
+    .fe:first-child { border-top: 0; }
+    .fe:hover { background: var(--s2); }
+    .fe .badge { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #111; }
+    .fe .badge svg { width: 16px; height: 16px; }
+    .fe .badge.pending { border: 2px solid var(--cat); border-top-color: transparent; animation: spin .8s linear infinite; background: transparent; }
+    .fe .t { font-weight: 600; font-size: 14px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fe .m { font-size: 12px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fe .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+    .fe .tags span { font-family: var(--f-mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--line-strong); border-radius: 3px; padding: 0 5px; line-height: 16px; }
+    .fe.fresh { animation: flash 1.8s ease; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* canvas */
+    #net { position: relative; min-height: 0; background: var(--bg); overflow: hidden; }
+    #netCanvas { position: absolute; inset: 0; }
+    .toolbar { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 6; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; pointer-events: none; }
+    .toolbar > * { pointer-events: auto; }
+    .search { position: relative; width: min(320px, 100%); }
+    .search .icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); }
+    .search .input { padding: 8px 10px 8px 32px; background: var(--s1); }
+    .zoom { display: flex; border: 1px solid var(--line-strong); border-radius: 4px; overflow: hidden; background: var(--s1); }
+    .zoom button { width: 38px; height: 36px; border: 0; background: transparent; color: var(--ink); cursor: pointer; display: grid; place-items: center; }
+    .zoom button + button { border-left: 1px solid var(--line-strong); }
+    .zoom button:hover { background: var(--s3); }
+    .zoom svg { width: 16px; height: 16px; }
+    .follow { background: var(--s1); border: 1px solid var(--line-strong); border-radius: 4px; padding: 7px 10px; }
+    .side-btn { display: none; }
+    .key { position: absolute; left: 12px; bottom: 12px; z-index: 4; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; max-width: calc(100% - 24px); padding: 8px 12px; background: rgba(22, 23, 26, .92); border: 1px solid var(--line); border-radius: 4px; font-size: 12px; color: var(--ink-2); }
+    .key .sw { display: inline-flex; align-items: center; gap: 6px; }
+    .key .sw i { width: 10px; height: 10px; border-radius: 50%; display: inline-grid; place-items: center; color: #111; }
+    .key .sw i svg { width: 8px; height: 8px; stroke-width: 3.5; }
+    .key .faded i { opacity: .4; }
+    .drawer .solved-by { display: grid; grid-template-columns: 22px 1fr; gap: 10px; margin-top: 12px; padding: 10px 12px; border: 1px solid rgba(63, 166, 107, .5); border-left: 4px solid #3fa66b; border-radius: 4px; background: rgba(63, 166, 107, .08); font-size: 14px; line-height: 1.4; }
+    .drawer .solved-by .icon { color: #3fa66b; margin-top: 2px; }
+    .drawer .solved-by b { display: block; font-family: var(--f-mono); font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: #3fa66b; margin-bottom: 2px; }
+    .loading, .empty-over { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; }
+    .loading { pointer-events: none; color: var(--muted); }
+    .empty-over { background: rgba(15, 16, 18, .6); }
+    .banner { position: absolute; left: 50%; top: 60px; transform: translateX(-50%); z-index: 7; display: flex; align-items: center; gap: 10px; max-width: min(520px, calc(100% - 24px)); padding: 9px 12px; background: var(--s2); border: 1px solid var(--line-strong); border-left: 4px solid var(--cat); border-radius: 4px; box-shadow: 0 8px 24px rgba(0, 0, 0, .4); font-size: 14px; cursor: pointer; }
+    .banner .badge { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: #111; flex: none; }
+    .banner .badge svg { width: 14px; height: 14px; }
+    .banner .badge.pending { border: 2px solid var(--cat); border-top-color: transparent; animation: spin .8s linear infinite; background: transparent; }
+    .drawer { position: absolute; top: 60px; right: 12px; bottom: 12px; width: min(380px, calc(100% - 24px)); background: var(--s1); border: 1px solid var(--line-strong); border-top: 4px solid var(--cat); border-radius: var(--r); padding: 16px; overflow-y: auto; z-index: 5; }
+    .drawer h2 { font-family: var(--f-display); font-weight: 700; font-size: 26px; line-height: 1.05; margin-top: 8px; }
+    .drawer .hd { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .drawer .ty { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+    .drawer .ty .badge { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: #111; }
+    .drawer .ty .badge svg { width: 14px; height: 14px; }
+    .drawer .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .rl { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 9px; align-items: center; width: 100%; padding: 7px 4px; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 14px; text-align: left; cursor: pointer; }
+    .rl:hover { background: var(--s2); }
+    .rl i { width: 10px; height: 10px; border-radius: 50%; }
+    .rl span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rl .w { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+    .site-tags { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+    .site-tag { position: absolute; left: 0; top: 0; pointer-events: auto; display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; background: rgba(15, 16, 18, .88); border: 1px solid var(--cat); border-radius: 3px; color: var(--ink); font-weight: 600; font-size: 14px; white-space: nowrap; cursor: pointer; }
+    .site-tag:hover { background: var(--s2); }
+    .site-tag .n { display: inline-flex; align-items: center; gap: 5px; font-family: var(--f-mono); font-size: 11px; font-weight: 500; color: var(--ink-2); }
+    .site-tag .n::before { content: ''; width: 7px; height: 7px; border-radius: 1px; background: var(--serious); }
+    .linkish { border: 0; background: none; padding: 0; color: var(--ink); font: inherit; font-weight: 600; text-decoration: underline; text-decoration-color: var(--cat); text-underline-offset: 3px; cursor: pointer; }
+    .drawer q.said { display: block; color: var(--ink-2); quotes: '“' '”'; line-height: 1.45; }
+    .drawer .chips .chip { cursor: pointer; }
+    div.vis-tooltip { background: var(--s3) !important; color: var(--ink) !important; border: 1px solid var(--line-strong) !important; border-radius: 4px !important; font-family: var(--f-ui) !important; font-size: 13px !important; padding: 8px 10px !important; box-shadow: 0 6px 18px rgba(0,0,0,.45) !important; max-width: 280px; white-space: normal !important; }
+    .tip-t { font-weight: 600; } .tip-m { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .backdrop { display: none; }
+    @media (max-width: 860px) {
+      .wrap { grid-template-columns: 1fr; }
+      .side { position: fixed; z-index: 40; top: 0; bottom: 0; left: 0; width: min(340px, 88vw); transform: translateX(-102%); transition: transform .2s ease; box-shadow: 8px 0 24px rgba(0,0,0,.5); }
+      body.side-open .side { transform: none; }
+      body.side-open .backdrop { display: block; position: fixed; inset: 0; z-index: 39; background: rgba(0,0,0,.55); }
+      .side-btn { display: inline-flex; background: var(--s1); }
+      .search { flex: 1 1 100%; order: 3; width: auto; }
+      .follow .txt { display: none; }
+      .key { font-size: 11px; gap: 4px 10px; padding: 6px 10px; }
+      .key .muted, .key .faded { display: none; }
+      .drawer { top: auto; height: 62%; left: 12px; width: auto; }
+      .banner { top: 108px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .fe .badge.pending, .banner .badge.pending { animation: none; } }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div class="wrap">
+    <aside class="side" id="side" aria-label="Filters and incoming reports" data-i18n-attr="aria-label">
+      <div class="sumline" id="sumline"><span class="sk line" style="width:180px"></span></div>
+      <div class="side-tabs" role="tablist">
+        <button type="button" role="tab" data-pane="filters" class="on" aria-selected="true" data-i18n>Filters</button>
+        <button type="button" role="tab" data-pane="live" aria-selected="false"><span data-i18n>Coming in</span><span class="newdot hidden" id="liveDot" aria-label="new" data-i18n-attr="aria-label"></span></button>
+      </div>
+      <div class="pane" id="paneFilters">
+        <section class="fsec">
+          <label class="lbl" for="siteSel"><span data-i18n>Job site</span></label>
+          <select class="select" id="siteSel"><option value="" data-i18n>All job sites</option></select>
+        </section>
+        <section class="fsec">
+          <div class="lbl"><span data-i18n>When</span></div>
+          <div class="seg" id="timeSeg" role="group" aria-label="Time range" data-i18n-attr="aria-label"><button type="button" data-d="7" data-i18n>7 days</button><button type="button" data-d="30" data-i18n>30 days</button><button type="button" data-d="90" data-i18n>90 days</button><button type="button" data-d="0" data-i18n>All</button></div>
+        </section>
+        <section class="fsec">
+          <div class="lbl"><span data-i18n>Urgency</span><small data-i18n>colour</small></div>
+          <div class="urg" id="urgency"></div>
+        </section>
+        <section class="fsec">
+          <div class="lbl"><span data-i18n>Type of issue</span><small data-i18n>icon</small></div>
+          <div class="facet" id="issues"></div>
+        </section>
+        <section class="fsec">
+          <label class="switch"><input type="checkbox" id="openOnly"><span class="track"></span><span data-i18n>Open issues only</span></label>
+        </section>
+        <details class="fsec more">
+          <summary><span data-i18n>More on the map</span><span id="moreChev"></span></summary>
+          <div class="facet" id="layers" style="margin-top:6px"></div>
+        </details>
+        <button class="linkbtn" id="resetBtn" type="button" data-i18n>Reset filters</button>
+      </div>
+      <div class="pane hidden" id="paneLive"><div id="feed"></div></div>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+    <div id="net">
+      <div id="netCanvas"></div>
+      <div class="toolbar">
+        <button class="btn sm side-btn" id="sideBtn" type="button"></button>
+        <div class="search"><span id="searchIcon"></span><input class="input" id="search" list="nodeList" placeholder="Find a machine, part, code or site" autocomplete="off" aria-label="Find on the map" data-i18n-attr="placeholder,aria-label"><datalist id="nodeList"></datalist></div>
+        <div class="zoom"><button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out" data-i18n-attr="aria-label,title"></button><button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in" data-i18n-attr="aria-label,title"></button><button type="button" id="fitBtn" aria-label="Show everything" title="Show everything" data-i18n-attr="aria-label,title"></button></div>
+        <label class="switch follow" title="Move to each new report as it arrives" data-i18n-attr="title"><input type="checkbox" id="follow"><span class="track"></span><span class="txt" data-i18n>Follow new reports</span></label>
+      </div>
+      <div class="site-tags" id="siteTags"></div>
+      <div class="key" id="key"></div>
+      <div class="loading" id="loading"><div style="text-align:left;width:220px"><span class="sk line"></span><span class="sk line" style="width:70%"></span><div class="muted" style="font-size:13px;margin-top:10px" data-i18n>Placing reports on the map…</div></div></div>
+      <div class="empty-over hidden" id="emptyOver"></div>
+      <div class="banner hidden" id="banner" role="status"></div>
+      <div class="drawer hidden" id="drawer" role="dialog" aria-label="Details" data-i18n-attr="aria-label"></div>
+    </div>
+  </div>
+  <script src="/vendor/vis-network/vis-network.min.js"></script>
+  <script src="/i18n/es.js"></script>
+  <script src="/i18n/hi.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/graph.js"></script>
+</body>
+</html>

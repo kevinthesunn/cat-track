@@ -1,0 +1,85 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Length 2834 >>
+stream
+BT /F2 16 Tf 54 722 Td (Cat 337 HX Hydraulic Excavator - Product Spec Sheet) Tj ET
+BT /F1 10 Tf 54 708 Td (DEMO DOCUMENT - fictional product and values created for the Cat Track hackathon. Not an) Tj ET
+BT /F1 10 Tf 54 694 Td (official Caterpillar specification.) Tj ET
+BT /F2 12 Tf 54 654 Td (Overview) Tj ET
+BT /F1 10 Tf 54 640 Td (The Cat 337 HX is a new 37-tonne hydraulic excavator that replaces the Cat 336 in quarry and) Tj ET
+BT /F1 10 Tf 54 626 Td (highway work. It carries over the 336 operator station and adds a redesigned boom-foot hose) Tj ET
+BT /F1 10 Tf 54 612 Td (route and a dust-rated cooling package, both developed from field reports of hose chafing and) Tj ET
+BT /F1 10 Tf 54 598 Td (overheating.) Tj ET
+BT /F2 12 Tf 54 558 Td (Engine and power) Tj ET
+BT /F1 10 Tf 54 544 Td (Engine power: 232 kW) Tj ET
+BT /F1 10 Tf 54 530 Td (Engine model: C9.3B) Tj ET
+BT /F1 10 Tf 54 516 Td (Operating weight: 37900 kg) Tj ET
+BT /F1 10 Tf 54 502 Td (Fuel tank capacity: 600 L) Tj ET
+BT /F1 10 Tf 54 488 Td (DEF tank capacity: 41 L) Tj ET
+BT /F2 12 Tf 54 448 Td (Hydraulic system) Tj ET
+BT /F1 10 Tf 54 434 Td (Main system maximum pressure: 35 MPa) Tj ET
+BT /F1 10 Tf 54 420 Td (Maximum pump flow: 560 L/min) Tj ET
+BT /F1 10 Tf 54 406 Td (Swing speed: 9.6 rpm) Tj ET
+BT /F1 10 Tf 54 392 Td (Boom hoses run inside a steel guard channel at the boom foot, clear of the frame bracket. The) Tj ET
+BT /F1 10 Tf 54 378 Td (guard replaces the abrasion sleeve and P-clamp used as a field fix on the Cat 336.) Tj ET
+BT /F2 12 Tf 54 338 Td (Cooling system) Tj ET
+BT /F1 10 Tf 54 324 Td (Side-by-side cooling package with a reversing fan that purges dust from the radiator and oil) Tj ET
+BT /F1 10 Tf 54 310 Td (cooler cores every 30 minutes.) Tj ET
+BT /F1 10 Tf 54 296 Td (Maximum ambient temperature rating: 52 C) Tj ET
+BT /F2 12 Tf 54 256 Td (Service intervals) Tj ET
+BT /F1 10 Tf 54 242 Td (Engine oil and filter: replace every 500 hours.) Tj ET
+BT /F1 10 Tf 54 228 Td (Hydraulic oil filter: replace every 1000 hours.) Tj ET
+BT /F1 10 Tf 54 214 Td (Radiator and oil cooler cores: inspect every 250 hours, and every 100 hours at dusty sites.) Tj ET
+BT /F1 10 Tf 54 200 Td (Boom-foot hose guard: inspect for wear every 250 hours.) Tj ET
+BT /F1 10 Tf 54 186 Td (Air filter primary element: replace every 500 hours, or when the restriction indicator shows.) Tj ET
+BT /F2 12 Tf 54 146 Td (Fault codes) Tj ET
+BT /F1 10 Tf 54 132 Td (E3301 Boom hose pressure drop detected - hydraulic hose at boom foot. Stop the machine and) Tj ET
+BT /F1 10 Tf 54 118 Td (inspect the hose guard.) Tj ET
+BT /F1 10 Tf 54 104 Td (E3415 Reversing fan cycle missed - cooling system. Check the fan drive and clean the cores.) Tj ET
+BT /F1 10 Tf 54 90 Td (CID 110 FMI 15 Engine coolant temperature high - cooling system.) Tj ET
+BT /F2 12 Tf 54 50 Td (Safety) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 401 >>
+stream
+BT /F1 10 Tf 54 728 Td (Operators must not keep working with an active hydraulic leak.) Tj ET
+BT /F1 10 Tf 54 714 Td (Do not open the radiator cap while the engine is hot.) Tj ET
+BT /F1 10 Tf 54 700 Td (Keep the exclusion zone clear of ground crew when swinging; the 337 HX has a 360 degree camera) Tj ET
+BT /F1 10 Tf 54 686 Td (system and a backup alarm that must be working before each shift.) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000266 00000 n 
+0000003152 00000 n 
+0000003288 00000 n 
+0000003740 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+3876
+%%EOF

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · Cat Track</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+    .head h1 { margin-top: 4px; }
+    .head .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .sites { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .sites button { padding: 7px 12px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--s1); color: var(--muted); font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    .sites button:hover { color: var(--ink); }
+    .sites button.on { color: var(--ink); border-color: var(--cat); box-shadow: inset 0 -2px 0 var(--cat); background: var(--s2); }
+    .board { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, .95fr); gap: 18px; align-items: start; }
+    @media (max-width: 1180px) { .board { grid-template-columns: 1fr 1fr; } .board > :last-child { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; } }
+    @media (max-width: 760px) { .board, .board > :last-child { grid-template-columns: 1fr; } }
+    .col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+    .panel-head a { font-size: 13px; }
+    .unit { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+    .unit:first-child { border-top: 0; }
+    .unit:hover .id { text-decoration: underline; text-decoration-color: var(--cat); }
+    .unit .ic { width: 34px; height: 34px; display: grid; place-items: center; border: 1.5px solid var(--line-strong); border-radius: 50%; color: var(--ink-2); }
+    .unit .ic svg { width: 20px; height: 20px; }
+    .unit.down .ic { border-color: var(--critical); } .unit.attention .ic { border-color: var(--serious); } .unit.operational .ic { border-color: var(--good); }
+    .unit .m { font-size: 13px; color: var(--muted); }
+    .unit .tele { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+    .unit .r { text-align: right; min-width: 96px; }
+    .unit .r .health { margin-top: 6px; }
+    .act-item { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; padding: 8px 0; border-top: 1px solid var(--line); cursor: pointer; font-size: 14px; }
+    .act-item:first-child { border-top: 0; }
+    .act-item .box { width: 18px; height: 18px; border-radius: 3px; border: 1.5px solid var(--line-strong); display: grid; place-items: center; margin-top: 1px; }
+    .act-item .box svg { width: 12px; height: 12px; stroke-width: 3; }
+    .act-item:hover .box { border-color: var(--cat); }
+    .act-item.done { opacity: .5; } .act-item.done .txt { text-decoration: line-through; }
+    .act-item.done .box { background: var(--good); border-color: var(--good); color: #06150c; }
+    .act-item .meta { font-size: 12px; color: var(--faint); margin-top: 2px; font-family: var(--f-mono); }
+    .case-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 14px; }
+    .case-row:first-child { border-top: 0; }
+    .case-row:hover .t { text-decoration: underline; text-decoration-color: var(--cat); }
+    .case-row .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .case-row .n { font-family: var(--f-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .links { display: flex; flex-direction: column; }
+    .links a { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px; }
+    .links a:first-child { border-top: 0; }
+    .links a .icon { color: var(--muted); }
+    .links a span.m { margin-left: auto; font-family: var(--f-mono); font-size: 11px; font-weight: 400; color: var(--muted); }
+    .links a:hover { color: var(--cat); }
+    .ask-log { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+    .bubble { font-size: 14px; max-width: 94%; }
+    .bubble.me { align-self: flex-end; background: var(--s3); border-radius: 4px; padding: 7px 11px; font-weight: 500; }
+    .bubble.bot { align-self: flex-start; border-left: 2px solid var(--cat); padding: 2px 0 2px 12px; }
+    .trace { margin-top: 6px; font-family: var(--f-mono); font-size: 11px; color: var(--faint); }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div class="page">
+    <div class="head">
+      <div><div class="label" id="siteLabel" data-i18n>Dashboard</div><h1 id="siteTitle"><span class="sk title" style="width:360px;height:36px"></span></h1><div class="sub" id="siteSub"></div></div>
+      <div class="row wrap" style="gap:14px">
+        <div class="sites" id="sites" role="group" aria-label="Job site" data-i18n-attr="aria-label"></div>
+        <label class="switch" title="Stream simulated sensor readings from every machine" data-i18n-attr="title"><input type="checkbox" id="teleToggle"><span class="track"></span><span data-i18n>Sensors</span></label>
+      </div>
+    </div>
+    <div class="statline" id="stats"><span class="sk" style="width:180px;height:56px"></span><span class="sk line" style="width:420px"></span></div>
+    <div class="board">
+      <div class="col">
+        <div class="panel"><div class="panel-head"><h3 data-i18n>Open alerts</h3><span class="count" id="alertCount"></span></div><div class="panel-body" id="alerts"></div></div>
+        <div class="panel"><div class="panel-head"><h3 data-i18n>Latest reports</h3><a href="/reports" id="logLink" data-i18n>Report log</a></div><div class="panel-body" id="latest"></div></div>
+      </div>
+      <div class="col">
+        <div class="panel"><div class="panel-head"><h3 data-i18n>Machines</h3><span class="count" id="fleetCount"></span></div><div class="panel-body" id="fleet"></div></div>
+        <div class="panel"><div class="panel-head"><h3 data-i18n>Tasks</h3><span class="count" id="actCount"></span></div><div class="panel-body" id="actions"></div></div>
+      </div>
+      <div class="col">
+        <div class="panel"><div class="panel-head"><h3 data-i18n>CAT Engineering</h3><a href="/engineering" data-i18n>All cases</a></div><div class="panel-body" id="cases"></div></div>
+        <div class="panel">
+          <div class="panel-head"><h3 data-i18n>Ask the record</h3><span class="count" id="aiMode"></span></div>
+          <div class="panel-body">
+            <div class="ask-log" id="askLog"><div class="bubble bot muted" data-i18n>Ask about a machine, a part or a pattern. It can also assign a task or warn a crew.</div></div>
+            <form class="row" id="askForm"><input class="input" id="askInput" placeholder="Which trucks have run hot this month?" autocomplete="off" data-i18n-attr="placeholder"><button class="btn primary" data-i18n>Ask</button></form>
+            <div class="chips" style="margin-top:10px" id="askChips"></div>
+          </div>
+        </div>
+        <div class="panel"><div class="panel-head"><h3 data-i18n>More</h3></div><div class="panel-body links" id="links"></div></div>
+      </div>
+    </div>
+  </div>
+  <script src="/i18n/es.js"></script>
+  <script src="/i18n/hi.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>
